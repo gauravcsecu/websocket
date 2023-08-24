@@ -1,0 +1,12 @@
+logging:
+  level:
+    org:
+      springframework:
+        security:
+          web: DEBUG
+
+
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <p>Web socket connected for : <span th:text="${requestId}"></span></p>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+        var privateStompClient = null;
+        var requestId = [[${requestId}]];
+        var socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function(frame) {
+            console.log('Connected to WebSocket:', frame);
+            stompClient.subscribe('/all/messages', function(result) {
+                console.log('Received websocket message:', result.body);
+                show(JSON.parse(result.body));
+            });
+        });
+
+        socket = new SockJS('/ws');
+        privateStompClient = Stomp.over(socket);
+        privateStompClient.connect({}, function(frame) {
+            console.log('Private WebSocket Connected:', frame);
+            privateStompClient.subscribe('/user/specific', function(result) {
+                console.log('Received private message:', result.body);
+                show(JSON.parse(result.body));
+            });
+        });
+
+        var topicSocket = new SockJS('/ws');
+        var topicStompClient = Stomp.over(topicSocket);
+        topicStompClient.connect({}, function(frame) {
+            console.log('Topic WebSocket Connected:', frame);
+            topicStompClient.subscribe(`/topic/${requestId}`, function(result) {
+                console.log('Received topic message:', result.body);
+                show(JSON.parse(result.body));
+            });
+        });
+
+        function show(message) {
+            var response = document.getElementById('messages');
+            var p = document.createElement('p');
+            p.innerHTML= "message: "  + message.text;
+            response.appendChild(p);
+        }
+
+        </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topic Page</title>
+</head>
+<body>
+<div id="messages"></div>
+</body>
+</html>
