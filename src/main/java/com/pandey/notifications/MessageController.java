@@ -38,18 +38,9 @@ public class MessageController {
         simpMessagingTemplate.convertAndSendToUser(message.getTo(), "/specific", message);
     }
 
-
-//    @GetMapping("/topic/{requestId}")
-//    public String receiveFromTemplate(@PathVariable String requestId, Model model) {
-//        model.addAttribute("requestId", requestId);
-//        //todo : return json object
-//        return "message-template";
-//    }
-
     @GetMapping("/topic/{requestId}")
     public String receiveFromTemplate(@PathVariable String requestId, Model model) {
         model.addAttribute("requestId", requestId);
-        //todo : return json object
         return "message-template";
     }
 
